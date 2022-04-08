@@ -248,3 +248,12 @@ setup() {
    assert_failure
    assert_output --partial "no match for platform in manifest"
 }
+
+@test "plan/do: invalid BUILDKIT_HOST results in error" {
+   cd "$TESTDIR"
+
+   export BUILDKIT_HOST=tcp://test.invalid:1234
+   run timeout 5 "$DAGGER" "do" -p ./plan/do/actions.cue test
+   assert_failure
+   assert_output --partial "Unavailable: connection error"
+}
